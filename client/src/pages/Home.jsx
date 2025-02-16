@@ -30,7 +30,10 @@ const Home = () => {
           >
             Sign In
           </Button>
-          <Button className="ml-2 rounded-full">
+          <Button
+            className="ml-2 rounded-full"
+            onClick={() => navigate("/dashboard")}
+          >
             Start Creating
             <MoveRight />
           </Button>

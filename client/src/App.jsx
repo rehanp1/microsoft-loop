@@ -8,11 +8,10 @@ import { useState } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  const [login, setLogin] = useState(true);
+  const [login, setLogin] = useState(false);
   return (
     <BrowserRouter>
       <Routes>
-
         <Route path="/" element={<Home />} />
 
         {!login && <Route path="/sign-up" element={<SignUp />} />}
