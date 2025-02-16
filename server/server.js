@@ -1,83 +1,90 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const WebSocket = require("ws");
+import dotenv from "dotenv";
+import connectDB from "./db/index.js";
 
-require("dotenv").config();
-const app = express();
-app.use(express.json());
-app.use(cors());
+dotenv.config();
 
-// MongoDB Connection
+connectDB();
 
-mongoose.connect(process.env.VITE_MONGO_URI);
+// const express = require("express");
+// const mongoose = require("mongoose");
+// const cors = require("cors");
+// const WebSocket = require("ws");
 
-// Mongoose Model
-const Todo = mongoose.model(
-  "Todo",
-  new mongoose.Schema({
-    task: String,
-    completed: Boolean,
-  })
-);
+// require("dotenv").config();
+// const app = express();
+// app.use(express.json());
+// app.use(cors());
 
-// REST API Endpoints
-app.get("/todos", async (req, res) => {
-  try {
-    const todos = await Todo.find();
-    res.json(todos);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// // MongoDB Connection
 
-app.post("/todos", async (req, res) => {
-  try {
-    const newTodo = new Todo(req.body);
-    await newTodo.save();
-    res.status(201).json(newTodo);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
+// mongoose.connect(process.env.VITE_MONGO_URI);
 
-app.put("/todos/:id", async (req, res) => {
-  try {
-    const updatedTodo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    res.json(updatedTodo);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
+// // Mongoose Model
+// const Todo = mongoose.model(
+//   "Todo",
+//   new mongoose.Schema({
+//     task: String,
+//     completed: Boolean,
+//   })
+// );
 
-app.delete("/todos/:id", async (req, res) => {
-  try {
-    await Todo.findByIdAndDelete(req.params.id);
-    res.json({ message: "Todo deleted" });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
+// // REST API Endpoints
+// app.get("/todos", async (req, res) => {
+//   try {
+//     const todos = await Todo.find();
+//     res.json(todos);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
-// WebSocket Server for Real-Time Updates
-const wss = new WebSocket.Server({ port: 8081 });
+// app.post("/todos", async (req, res) => {
+//   try {
+//     const newTodo = new Todo(req.body);
+//     await newTodo.save();
+//     res.status(201).json(newTodo);
+//   } catch (err) {
+//     res.status(400).json({ error: err.message });
+//   }
+// });
 
-wss.on("connection", (ws) => {
-  console.log("Client connected to WebSocket");
+// app.put("/todos/:id", async (req, res) => {
+//   try {
+//     const updatedTodo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
+//       new: true,
+//     });
+//     res.json(updatedTodo);
+//   } catch (err) {
+//     res.status(400).json({ error: err.message });
+//   }
+// });
 
-  const changeStream = Todo.watch();
-  changeStream.on("change", (change) => {
-    console.log("Change detected:", change);
-    ws.send(JSON.stringify(change));
-  });
+// app.delete("/todos/:id", async (req, res) => {
+//   try {
+//     await Todo.findByIdAndDelete(req.params.id);
+//     res.json({ message: "Todo deleted" });
+//   } catch (err) {
+//     res.status(400).json({ error: err.message });
+//   }
+// });
 
-  ws.on("close", () => {
-    console.log("Client disconnected");
-    changeStream.close();
-  });
-});
+// // WebSocket Server for Real-Time Updates
+// const wss = new WebSocket.Server({ port: 8081 });
 
-// Start Server
-app.listen(5000, () => console.log("Server running on port 5000"));
+// wss.on("connection", (ws) => {
+//   console.log("Client connected to WebSocket");
+
+//   const changeStream = Todo.watch();
+//   changeStream.on("change", (change) => {
+//     console.log("Change detected:", change);
+//     ws.send(JSON.stringify(change));
+//   });
+
+//   ws.on("close", () => {
+//     console.log("Client disconnected");
+//     changeStream.close();
+//   });
+// });
+
+// // Start Server
+// app.listen(5000, () => console.log("Server running on port 5000"));
