@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
+import Header from "./components/Header";
+import Hero from "./components/Hero";
 
 const Dashboard = () => {
   return (
-    <div>Dashboard</div>
-  )
-}
+    <div>
+      <Header />
+      <Hero />
+    </div>
+  );
+};
 
-export default Dashboard
+export default Dashboard;
