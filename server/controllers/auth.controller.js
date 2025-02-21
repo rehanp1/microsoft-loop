@@ -9,22 +9,29 @@ const signUpUser = async (req, res) => {
     if (userExists) {
       return res
         .status(400)
-        .json({ msg: "User with this email already exists" });
+        .json({ success: false, msg: "User with this email already exists" });
     }
 
     const saltRound = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, saltRound);
     const user = await User.create({ name, email, password: hashPassword });
 
+    const token = await user.generateToken();
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // Set true in production (HTTPS)
+      sameSite: "Strict",
+      maxAge: 3600000, // 1 hour
+    });
+
     res.status(201).json({
+      success: true,
       msg: "OK",
-      id: user._id,
-      name,
-      email,
-      token: await user.generateToken(),
+      name: user.name,
+      email: user.email,
     });
   } catch (error) {
-    res.status(500).json({ msg: "Internal server error" });
+    res.status(500).json({ success: false, msg: "Internal server error" });
   }
 };
 
@@ -34,28 +41,48 @@ const signInUser = async (req, res) => {
 
     const userExists = await User.findOne({ email });
     if (!userExists) {
-      return res.status(400).json({ msg: "Invalid credentials" });
+      return res
+        .status(400)
+        .json({ success: false, msg: "Invalid credentials" });
     }
 
-    const passwordValid = bcrypt.compare(password, userExists.password);
+    const passwordValid = await bcrypt.compare(password, userExists.password);
     if (!passwordValid) {
-      return res.status(400).json({ msg: "Invalid credentials" });
+      return res
+        .status(400)
+        .json({ success: false, msg: "Invalid credentials" });
     }
+
+    const token = await userExists.generateToken();
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // Set true in production (HTTPS)
+      sameSite: "Strict",
+      maxAge: 3600000, // 1 hour
+    });
 
     res.status(200).json({
+      success: true,
       msg: "OK",
-      id: userExists._id,
       name: userExists.name,
       email: userExists.email,
-      token: await userExists.generateToken(),
     });
   } catch (error) {
-    res.status(500).json({ msg: "Internal server error" });
+    res.status(500).json({ success: false, msg: "Internal server error" });
   }
+};
+
+const signOutUser = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "Strict",
+  });
+  res.json({ success: false, msg: "OK" });
 };
 
 const testToken = (req, res) => {
   res.status(200).json(req.user);
 };
 
-export { signUpUser, signInUser, testToken };
+export { signUpUser, signInUser, testToken, signOutUser };

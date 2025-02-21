@@ -2,18 +2,23 @@ import dotenv from "dotenv";
 import connectDB from "./db/index.js";
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
-
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Frontend URL
+    credentials: true, // Allow cookies to be sent
+  })
+);
 app.use(express.json());
 
 // Auth router
 app.use("/", authRouter);
-
 
 connectDB()
   .then(() => {
