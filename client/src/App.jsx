@@ -7,18 +7,19 @@ import SignIn from "./pages/SignIn";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CreateWorkSpace from "./pages/dashboard/pages/CreateWorkSpace";
+import { useAuth } from "./contexts/AuthContext";
 
 function App() {
-  const [login, setLogin] = useState(true);
+  const { user } = useAuth();
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
 
-        {!login && <Route path="/sign-up" element={<SignUp />} />}
-        {!login && <Route path="/sign-in" element={<SignIn />} />}
+        {!user && <Route path="/sign-up" element={<SignUp />} />}
+        {!user && <Route path="/sign-in" element={<SignIn />} />}
 
-        <Route element={<ProtectedRoute login={login} />}>
+        <Route element={<ProtectedRoute user={user} />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create-workspace" element={<CreateWorkSpace />} />
           <Route path="/sign-up" element={<Navigate to="/dashboard" />} />

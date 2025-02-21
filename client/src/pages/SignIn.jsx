@@ -1,12 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Play } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import Logo from "@/components/Logo";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 const SignIn = () => {
+  const { handleSetUser } = useAuth();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData((prevData) => ({ ...prevData, [e.target.id]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const respone = await fetch(import.meta.env.VITE_BASE_URL + "/sign-in", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await respone.json();
+      handleSetUser(data);
+    } catch (error) {
+      handleSetUser(null);
+      console.log("SIGN IN frontent FAILED: ", error);
+    }
+  };
+
   return (
     <div className="grid place-items-center min-h-screen bg-[url(microsoft-bg.avif)] bg-no-repeat bg-cover bg-center">
       {/* Sign in form */}
@@ -22,10 +52,12 @@ const SignIn = () => {
             Welcome back! Please sign in to continue
           </p>
 
-          <form className="mt-4 space-y-3">
+          <form onSubmit={handleSubmit} className="mt-4 space-y-3">
             <div className="text-left">
               <Label htmlFor="email">Email Address</Label>
               <Input
+                onChange={(e) => handleChange(e)}
+                value={formData.email}
                 type="email"
                 id="email"
                 className="text-sm border-gray-400"
@@ -34,6 +66,8 @@ const SignIn = () => {
             <div className="text-left">
               <Label htmlFor="password">Password</Label>
               <Input
+                onChange={(e) => handleChange(e)}
+                value={formData.password}
                 type="password"
                 id="password"
                 className="text-sm border-gray-400"

@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const ProtectedRoute = ({ login }) => {
+const ProtectedRoute = ({ user }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!login) {
+    if (user === null) {
       navigate("/sign-in", { replace: true });
     }
-  }, [navigate, login]);
+  }, [navigate, user]);
 
   return <Outlet />;
 };

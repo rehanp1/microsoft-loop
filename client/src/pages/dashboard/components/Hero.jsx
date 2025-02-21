@@ -1,14 +1,16 @@
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 import { AlignLeft, LayoutGrid, Plus } from "lucide-react";
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const Hero = () => {
   const [workSpaceList, setWorkSpaceList] = useState([]);
+  const { user } = useAuth();
   return (
     <main className="max-w-6xl mx-auto mt-12 px-4 xl:px-0">
       <div className="flex justify-between items-center">
-        <h1 className="font-semibold text-lg">Hello, User Name</h1>
+        <h1 className="font-semibold text-lg">Hello, {user?.name}</h1>
         <NavLink to="/create-workspace">
           <Button size="icon">
             <Plus />
