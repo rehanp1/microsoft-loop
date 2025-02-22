@@ -1,12 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { AlignLeft, LayoutGrid, Plus } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import WorkspaceItemList from "./WorkspaceItemList";
 
 const Hero = () => {
   const [workSpaceList, setWorkSpaceList] = useState([]);
   const { user } = useAuth();
+
+  useEffect(() => {
+    fetchWorkSpaces();
+  }, []);
+
+  const fetchWorkSpaces = async () => {
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_BASE_URL + "/get-all-workspaces",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+      const data = await response.json();
+      console.log(data.result);
+      setWorkSpaceList(data.result);
+    } catch (error) {
+      console.log("WORKSPACE FETCH frontent FAILED: ", error);
+    }
+  };
+
   return (
     <main className="max-w-6xl mx-auto mt-12 px-4 xl:px-0">
       <div className="flex justify-between items-center">
@@ -44,7 +67,8 @@ const Hero = () => {
         </div>
       ) : (
         //Rendering of workspaces
-        <div></div>
+
+        <WorkspaceItemList workSpaceList={workSpaceList} setWorkSpaceList={setWorkSpaceList} />
       )}
     </main>
   );

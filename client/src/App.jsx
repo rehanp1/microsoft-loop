@@ -21,6 +21,7 @@ function App() {
 
         <Route element={<ProtectedRoute user={user} />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          {/* <Route path="/dashboard/:worspaceId" element={<Dashboard />} /> */}
           <Route path="/create-workspace" element={<CreateWorkSpace />} />
           <Route path="/sign-up" element={<Navigate to="/dashboard" />} />
           <Route path="/sign-in" element={<Navigate to="/dashboard" />} />
