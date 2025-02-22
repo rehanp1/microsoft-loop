@@ -81,8 +81,4 @@ const signOutUser = (req, res) => {
   res.json({ success: false, msg: "OK" });
 };
 
-const testToken = (req, res) => {
-  res.status(200).json(req.user);
-};
-
-export { signUpUser, signInUser, testToken, signOutUser };
+export { signUpUser, signInUser, signOutUser };
