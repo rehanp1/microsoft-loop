@@ -5,6 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
 import workspaceRouter from "./routes/workspace.routes.js";
+import documentRouter from "./routes/document.routes.js";
 
 dotenv.config();
 
@@ -20,7 +21,8 @@ app.use(express.json());
 
 // Auth router
 app.use("/", authRouter);
-app.use("/", workspaceRouter)
+app.use("/workspace", workspaceRouter);
+app.use("/document", documentRouter)
 
 connectDB()
   .then(() => {

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Workspace } from "../models/workspace.model.js";
+import { Document } from "../models/document.model.js";
 
 const createWorkspace = async (req, res) => {
   try {
@@ -11,6 +12,9 @@ const createWorkspace = async (req, res) => {
       coverImage,
       emoji,
       owner: verifiedID,
+    });
+    const docResult = await Document.create({
+      workspaceId: result._id,
     });
     res.status(200).json({
       success: true,
@@ -44,7 +48,12 @@ const deleteWorkspace = async (req, res) => {
     const { id: verifiedID } = req.user;
     const { workspaceId } = req.body;
 
-    await Workspace.deleteOne({ owner: verifiedID, _id: workspaceId });
+    await Workspace.deleteOne({
+      owner: verifiedID,
+      _id: workspaceId,
+    });
+
+    await Document.deleteMany({ workspaceId });
     res.status(200).json({
       success: true,
       msg: "OK",

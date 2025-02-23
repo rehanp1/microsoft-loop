@@ -9,13 +9,13 @@ import { authenticateToken } from "../middlewares/auth.middleware.js";
 const workspaceRouter = Router();
 
 workspaceRouter
-  .route("/create-workspace")
+  .route("/create")
   .post(authenticateToken, createWorkspace);
 workspaceRouter
-  .route("/get-all-workspaces")
+  .route("/get-all")
   .post(authenticateToken, getAllWorkspaces);
 workspaceRouter
-  .route("/delete-workspace")
+  .route("/delete")
   .post(authenticateToken, deleteWorkspace);
 
 export default workspaceRouter;
