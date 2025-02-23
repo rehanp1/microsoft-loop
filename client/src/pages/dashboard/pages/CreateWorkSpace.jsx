@@ -18,7 +18,7 @@ const CreateWorkSpace = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        import.meta.env.VITE_BASE_URL + "/create-workspace",
+        import.meta.env.VITE_BASE_URL + "/workspace/create",
         {
           method: "POST",
           credentials: "include",
@@ -32,8 +32,10 @@ const CreateWorkSpace = () => {
           }),
         }
       );
-      const data = await response.json();
-      navigate("/dashboard/" + data.result._id);
+      const data = await response.json();      
+      navigate(`/dashboard/${data.result._id}`, {
+        replace: true,
+      });
     } catch (error) {
       console.log("CREATE-WORKSPACE frontent FAILED: ", error);
     } finally {

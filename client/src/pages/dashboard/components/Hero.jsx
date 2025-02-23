@@ -8,6 +8,7 @@ import WorkspaceItemList from "./WorkspaceItemList";
 const Hero = () => {
   const [workSpaceList, setWorkSpaceList] = useState([]);
   const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchWorkSpaces();
@@ -15,8 +16,9 @@ const Hero = () => {
 
   const fetchWorkSpaces = async () => {
     try {
+      setLoading(true);
       const response = await fetch(
-        import.meta.env.VITE_BASE_URL + "/get-all-workspaces",
+        import.meta.env.VITE_BASE_URL + "/workspace/get-all",
         {
           method: "POST",
           credentials: "include",
@@ -27,8 +29,14 @@ const Hero = () => {
       setWorkSpaceList(data.result);
     } catch (error) {
       console.log("WORKSPACE FETCH frontent FAILED: ", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <main className="max-w-6xl mx-auto mt-12 px-4 xl:px-0">
@@ -53,7 +61,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {workSpaceList.length === 0 ? (
+      {workSpaceList?.length === 0 ? (
         <div className="flex flex-col items-center mt-10">
           <img src="/workspace.png" alt="workspace-img" className="w-44" />
           <p className="text-sm font-medium mb-3 text-slate-800">
@@ -67,8 +75,10 @@ const Hero = () => {
         </div>
       ) : (
         //Rendering of workspaces
-
-        <WorkspaceItemList workSpaceList={workSpaceList} setWorkSpaceList={setWorkSpaceList} />
+        <WorkspaceItemList
+          workSpaceList={workSpaceList}
+          setWorkSpaceList={setWorkSpaceList}
+        />
       )}
     </main>
   );

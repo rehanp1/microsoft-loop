@@ -6,12 +6,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical, Trash } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const WorkspaceItemList = ({ workSpaceList, setWorkSpaceList }) => {
+  const navigate = useNavigate();
+
   const handleDeleteWorkspace = async (_id) => {
-    try{
+    try {
       const response = await fetch(
-        import.meta.env.VITE_BASE_URL + "/delete-workspace",
+        import.meta.env.VITE_BASE_URL + "/workspace/delete",
         {
           method: "POST",
           credentials: "include",
@@ -26,20 +29,21 @@ const WorkspaceItemList = ({ workSpaceList, setWorkSpaceList }) => {
         ...prevData.filter((item) => item._id !== _id),
       ]);
       console.log(data);
-    }catch(error){
+    } catch (error) {
       console.log("WORKSPACE DELETE frontent FAILED: ", error);
     }
   };
   return (
     <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  my-8">
-      {workSpaceList.map((workspace) => (
+      {workSpaceList?.map((workspace) => (
         <div
           key={workspace._id}
           className="max-w-sm border rounded-xl overflow-hidden shadow-lg  cursor-pointer"
         >
           <img
+            onClick={() => navigate(`/dashboard/${workspace._id}`)}
             src={workspace.coverImage}
-            alt=""
+            alt="cover-img"
             className="w-full h-40 object-cover"
           />
           <section className="flex gap-2 p-4 items-center justify-between">

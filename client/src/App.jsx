@@ -8,6 +8,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CreateWorkSpace from "./pages/dashboard/pages/CreateWorkSpace";
 import { useAuth } from "./contexts/AuthContext";
+import WorkspaceDashboard from "./pages/dashboard/pages/WorkspaceDashboard";
 
 function App() {
   const { user } = useAuth();
@@ -21,7 +22,7 @@ function App() {
 
         <Route element={<ProtectedRoute user={user} />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          {/* <Route path="/dashboard/:worspaceId" element={<Dashboard />} /> */}
+          <Route path="/dashboard/:workspaceId" element={<WorkspaceDashboard />} />
           <Route path="/create-workspace" element={<CreateWorkSpace />} />
           <Route path="/sign-up" element={<Navigate to="/dashboard" />} />
           <Route path="/sign-in" element={<Navigate to="/dashboard" />} />
